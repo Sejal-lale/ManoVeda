@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
-import { X, Send } from "lucide-react";
+import { X, Send, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
 import type { Mood } from "./MoodTracker";
 
 interface Message {
@@ -37,6 +38,7 @@ const getInitialMessage = (mood: Mood | null): string => {
 export const ChatModal = ({ isOpen, onClose, currentMood }: ChatModalProps) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -55,8 +57,8 @@ export const ChatModal = ({ isOpen, onClose, currentMood }: ChatModalProps) => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const handleSend = () => {
-    if (!inputValue.trim()) return;
+  const handleSend = async () => {
+    if (!inputValue.trim() || isLoading) return;
 
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -66,25 +68,43 @@ export const ChatModal = ({ isOpen, onClose, currentMood }: ChatModalProps) => {
 
     setMessages((prev) => [...prev, userMessage]);
     setInputValue("");
+    setIsLoading(true);
 
-    // Simulate AI response
-    setTimeout(() => {
-      const responses = [
-        "I hear you. What part feels heaviest right now?",
-        "That makes sense. You're not alone in feeling this way.",
-        "Take your time. There's no rush here.",
-        "It sounds like you're carrying a lot. What would help right now?",
-        "I'm here. Sometimes just saying it out loud helps.",
-      ];
-      
+    try {
+      // Build conversation history for AI
+      const conversationHistory = messages
+        .filter((m) => m.id !== "1") // Skip initial greeting
+        .map((m) => ({
+          role: m.sender === "ai" ? "assistant" : "user",
+          content: m.text,
+        }));
+
+      conversationHistory.push({ role: "user", content: userMessage.text });
+
+      const { data, error } = await supabase.functions.invoke("chat", {
+        body: { messages: conversationHistory, mood: currentMood },
+      });
+
+      if (error) throw error;
+
       const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
-        text: responses[Math.floor(Math.random() * responses.length)],
+        text: data.reply || "I'm here for you. What's on your mind?",
         sender: "ai",
       };
-      
+
       setMessages((prev) => [...prev, aiMessage]);
-    }, 1000);
+    } catch (error) {
+      console.error("Chat error:", error);
+      const errorMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        text: "I'm having trouble connecting right now. Let's try again in a moment.",
+        sender: "ai",
+      };
+      setMessages((prev) => [...prev, errorMessage]);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   if (!isOpen) return null;
@@ -152,7 +172,7 @@ export const ChatModal = ({ isOpen, onClose, currentMood }: ChatModalProps) => {
             />
             <button
               onClick={handleSend}
-              disabled={!inputValue.trim()}
+              disabled={!inputValue.trim() || isLoading}
               className={cn(
                 "p-3 rounded-full",
                 "bg-primary text-primary-foreground",
@@ -161,7 +181,11 @@ export const ChatModal = ({ isOpen, onClose, currentMood }: ChatModalProps) => {
                 "disabled:opacity-50 disabled:cursor-not-allowed"
               )}
             >
-              <Send className="w-5 h-5" />
+              {isLoading ? (
+                <Loader2 className="w-5 h-5 animate-spin" />
+              ) : (
+                <Send className="w-5 h-5" />
+              )}
             </button>
           </div>
         </div>
