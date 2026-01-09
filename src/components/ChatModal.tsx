@@ -2,7 +2,8 @@ import { useState, useRef, useEffect } from "react";
 import { X, Send, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
-import type { Mood } from "./MoodTracker";
+
+type Mood = "calm" | "okay" | "stressed" | "overwhelmed" | "sad" | "numb";
 
 interface Message {
   id: string;
