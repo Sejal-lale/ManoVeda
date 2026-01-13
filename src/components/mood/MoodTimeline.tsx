@@ -1,7 +1,7 @@
 import { format, parseISO, isToday, isYesterday } from "date-fns";
 import { cn } from "@/lib/utils";
 
-type Mood = "calm" | "okay" | "stressed" | "overwhelmed" | "sad" | "numb";
+type Mood = "calm" | "happy" | "sad" | "anxious" | "tired";
 
 interface MoodEntry {
   id: string;
@@ -17,11 +17,10 @@ interface MoodTimelineProps {
 
 const moodData: Record<Mood, { emoji: string; label: string }> = {
   calm: { emoji: "😌", label: "Calm" },
-  okay: { emoji: "🙂", label: "Okay" },
-  stressed: { emoji: "😓", label: "Stressed" },
-  overwhelmed: { emoji: "😵", label: "Overwhelmed" },
-  sad: { emoji: "😔", label: "Sad" },
-  numb: { emoji: "🫥", label: "Numb" },
+  happy: { emoji: "🙂", label: "Happy" },
+  sad: { emoji: "😓", label: "Sad" },
+  anxious: { emoji: "😟", label: "Anxious" },
+  tired: { emoji: "😔", label: "Tired" },
 };
 
 const formatDateLabel = (dateStr: string): string => {
@@ -35,7 +34,10 @@ export const MoodTimeline = ({ entries, isLoading }: MoodTimelineProps) => {
   if (isLoading) {
     return (
       <div className="flex justify-center py-8">
-        <div className="w-8 h-8 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+        <div 
+          className="w-8 h-8 rounded-full border-2 border-t-transparent animate-spin" 
+          style={{ borderColor: "#E3A6A6", borderTopColor: "transparent" }}
+        />
       </div>
     );
   }
@@ -43,10 +45,10 @@ export const MoodTimeline = ({ entries, isLoading }: MoodTimelineProps) => {
   if (entries.length === 0) {
     return (
       <div className="text-center py-12">
-        <p className="text-muted-foreground text-sm">
+        <p className="text-sm" style={{ color: "#A98C8C" }}>
           No mood entries yet.
         </p>
-        <p className="text-muted-foreground text-xs mt-1">
+        <p className="text-xs mt-1" style={{ color: "#C7A9A9" }}>
           Start by selecting how you feel today.
         </p>
       </div>
@@ -60,19 +62,25 @@ export const MoodTimeline = ({ entries, isLoading }: MoodTimelineProps) => {
           key={entry.id}
           className={cn(
             "flex items-center gap-4 p-4 rounded-2xl",
-            "bg-card border border-border",
             "animate-fade-up"
           )}
-          style={{ animationDelay: `${index * 50}ms` }}
+          style={{ 
+            backgroundColor: "#F9F1F1",
+            boxShadow: "0 2px 8px rgba(139, 94, 94, 0.06)",
+            animationDelay: `${index * 50}ms` 
+          }}
         >
-          <div className="flex-shrink-0 w-12 h-12 rounded-full bg-accent flex items-center justify-center">
-            <span className="text-2xl">{moodData[entry.mood].emoji}</span>
+          <div 
+            className="flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center"
+            style={{ backgroundColor: "#FBECEC" }}
+          >
+            <span className="text-2xl">{moodData[entry.mood]?.emoji || "😌"}</span>
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-foreground">
-              {moodData[entry.mood].label}
+            <p className="text-sm font-medium" style={{ color: "#7A4A4A" }}>
+              {moodData[entry.mood]?.label || "Calm"}
             </p>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-xs" style={{ color: "#A98C8C" }}>
               {formatDateLabel(entry.date)}
             </p>
           </div>

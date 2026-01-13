@@ -9,7 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 
-export type Mood = "calm" | "okay" | "stressed" | "overwhelmed" | "sad" | "numb";
+export type Mood = "calm" | "happy" | "sad" | "anxious" | "tired";
 
 interface MoodEntry {
   id: string;
@@ -117,26 +117,27 @@ const MoodPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen" style={{ backgroundColor: "#F6EAEA" }}>
       {/* Header */}
-      <header className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b border-border">
-        <div className="max-w-2xl mx-auto px-4 py-4 flex items-center gap-3">
+      <header className="sticky top-0 z-10 backdrop-blur-sm" style={{ backgroundColor: "rgba(246, 234, 234, 0.9)" }}>
+        <div className="max-w-2xl mx-auto px-5 py-4 flex items-center gap-3">
           <Button
             variant="ghost"
             size="icon"
             onClick={() => navigate("/")}
-            className="rounded-full"
+            className="rounded-full hover:bg-[#F2DADA]"
+            style={{ color: "#8B5E5E" }}
           >
             <ArrowLeft className="h-5 w-5" />
           </Button>
-          <h1 className="text-lg font-medium text-foreground">Mood</h1>
+          <h1 className="text-lg font-medium" style={{ color: "#7A4A4A" }}>Mood</h1>
         </div>
       </header>
 
-      <main className="max-w-2xl mx-auto px-4 py-8 space-y-8">
+      <main className="max-w-2xl mx-auto px-5 py-8 space-y-8">
         {/* Today's Mood Selection */}
-        <section className="animate-fade-up">
-          <p className="text-sm text-muted-foreground text-center mb-6">
+        <section className="animate-fade-up text-center">
+          <p className="text-base mb-8" style={{ color: "#8B5E5E" }}>
             How are you feeling today?
           </p>
           <MoodSelector
@@ -145,25 +146,37 @@ const MoodPage = () => {
             disabled={isSaving}
           />
           {todayMood && (
-            <p className="text-xs text-muted-foreground text-center mt-4 animate-fade-in">
+            <p 
+              className="text-sm mt-6 animate-fade-in" 
+              style={{ color: "#B07A7A" }}
+            >
               You're allowed to feel this.
             </p>
           )}
         </section>
 
         {/* History Section */}
-        <section className="pt-4">
+        <section className="pt-6">
           <Tabs defaultValue="calendar" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 bg-secondary/50">
+            <TabsList 
+              className="grid w-full grid-cols-2 h-11 p-1 rounded-full"
+              style={{ backgroundColor: "transparent" }}
+            >
               <TabsTrigger
                 value="calendar"
-                className="data-[state=active]:bg-background"
+                className="rounded-full text-sm font-medium transition-all data-[state=active]:shadow-none"
+                style={{ 
+                  color: "#A98C8C",
+                }}
               >
                 Calendar
               </TabsTrigger>
               <TabsTrigger
                 value="timeline"
-                className="data-[state=active]:bg-background"
+                className="rounded-full text-sm font-medium transition-all data-[state=active]:shadow-none"
+                style={{ 
+                  color: "#A98C8C",
+                }}
               >
                 Timeline
               </TabsTrigger>
