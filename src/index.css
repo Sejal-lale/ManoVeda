@@ -2,120 +2,130 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Manoveda Design System - Warm Pink-Led Palette for Emotional Safety */
+/* Manoveda Design System - Warm Emotion-First Palette for Emotional Safety */
 
 @layer base {
   :root {
-    /* Soft Blush Pink Background */
-    --background: 345 50% 95%;
-    /* Warm Charcoal Text */
-    --foreground: 350 12% 21%;
+    /* Background Primary - #F6EAEA - Warm soft safe */
+    --background: 0 43% 94%;
+    /* Text Primary - #5A2E2E - Primary headlines */
+    --foreground: 0 33% 27%;
 
-    /* Rose Beige Cards */
-    --card: 345 60% 98%;
-    --card-foreground: 350 12% 21%;
+    /* Background Card - #F9F1F1 - Cards, modals, containers */
+    --card: 0 47% 96%;
+    --card-foreground: 0 33% 27%;
 
-    --popover: 345 60% 98%;
-    --popover-foreground: 350 12% 21%;
+    --popover: 0 47% 96%;
+    --popover-foreground: 0 33% 27%;
 
-    /* Dusty Rose Primary */
-    --primary: 347 45% 70%;
-    --primary-foreground: 0 0% 100%;
+    /* Accent Soft - #E7B7B7 - Primary CTA, highlighted cards */
+    --primary: 0 50% 81%;
+    --primary-foreground: 0 33% 27%;
 
-    /* Soft Off-White Secondary */
-    --secondary: 345 40% 93%;
-    --secondary-foreground: 350 12% 21%;
+    /* Lighter secondary for backgrounds */
+    --secondary: 0 43% 94%;
+    --secondary-foreground: 0 33% 27%;
 
-    /* Muted Rose-Gray */
-    --muted: 345 25% 85%;
-    --muted-foreground: 350 20% 48%;
+    /* Muted text areas - using text-muted #A98C8C */
+    --muted: 0 47% 96%;
+    --muted-foreground: 0 14% 61%;
 
-    /* Light Pink Accent */
-    --accent: 347 35% 85%;
-    --accent-foreground: 350 12% 21%;
+    /* Accent for selections - #FBECEC */
+    --accent: 0 68% 96%;
+    --accent-foreground: 0 33% 27%;
 
-    /* Soft warning - no harsh reds */
-    --destructive: 350 40% 55%;
+    /* Soft warning - warm tone */
+    --destructive: 0 40% 55%;
     --destructive-foreground: 0 0% 100%;
 
-    /* Light Pink-Gray Border */
-    --border: 345 30% 88%;
-    --input: 345 30% 88%;
-    --ring: 347 45% 70%;
+    /* Border using muted tones */
+    --border: 0 30% 88%;
+    --input: 0 30% 88%;
+    /* Accent Ring - #E3A6A6 */
+    --ring: 0 48% 77%;
 
     --radius: 1rem;
 
     /* Manoveda Custom Tokens */
-    --hero-glow: 347 45% 70%;
-    --mood-bg: 345 40% 92%;
-    --chat-bg: 345 55% 97%;
-    --overlay: 350 15% 15%;
+    /* Accent Soft - #E7B7B7 */
+    --hero-glow: 0 50% 81%;
+    --mood-bg: 0 43% 94%;
+    --chat-bg: 0 47% 96%;
+    --overlay: 0 33% 15%;
+    
+    /* Affirmation text - #B07A7A */
+    --affirmation: 0 26% 58%;
+    /* Text Secondary - #8B5E5E */
+    --text-secondary: 0 20% 46%;
     
     /* Animation durations */
     --duration-slow: 1.2s;
     --duration-medium: 0.8s;
     --duration-fast: 0.3s;
     
-    /* Soft shadows */
-    --shadow-soft: 0px 4px 12px hsl(350 20% 20% / 0.08);
-    --shadow-glow: 0 0 40px hsl(347 45% 70% / 0.3);
+    /* Soft shadows - warm toned */
+    --shadow-soft: 0px 4px 12px hsl(0 33% 27% / 0.06);
+    --shadow-glow: 0 0 40px hsl(0 50% 81% / 0.3);
 
-    --sidebar-background: 345 50% 97%;
-    --sidebar-foreground: 350 12% 26%;
-    --sidebar-primary: 347 45% 70%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 345 35% 93%;
-    --sidebar-accent-foreground: 350 12% 21%;
-    --sidebar-border: 345 30% 88%;
-    --sidebar-ring: 347 45% 70%;
+    --sidebar-background: 0 43% 94%;
+    --sidebar-foreground: 0 33% 27%;
+    --sidebar-primary: 0 50% 81%;
+    --sidebar-primary-foreground: 0 33% 27%;
+    --sidebar-accent: 0 68% 96%;
+    --sidebar-accent-foreground: 0 33% 27%;
+    --sidebar-border: 0 30% 88%;
+    --sidebar-ring: 0 48% 77%;
   }
 
   .dark {
-    /* Warm Dark Mode */
-    --background: 350 15% 12%;
-    --foreground: 345 30% 92%;
+    /* Warm Dark Mode - preserved structure with warm tones */
+    --background: 0 15% 12%;
+    --foreground: 0 30% 92%;
 
-    --card: 350 15% 16%;
-    --card-foreground: 345 30% 92%;
+    --card: 0 15% 16%;
+    --card-foreground: 0 30% 92%;
 
-    --popover: 350 15% 16%;
-    --popover-foreground: 345 30% 92%;
+    --popover: 0 15% 16%;
+    --popover-foreground: 0 30% 92%;
 
-    --primary: 347 40% 65%;
-    --primary-foreground: 350 15% 10%;
+    --primary: 0 40% 65%;
+    --primary-foreground: 0 15% 10%;
 
-    --secondary: 350 15% 20%;
-    --secondary-foreground: 345 30% 92%;
+    --secondary: 0 15% 20%;
+    --secondary-foreground: 0 30% 92%;
 
-    --muted: 350 15% 22%;
-    --muted-foreground: 345 20% 60%;
+    --muted: 0 15% 22%;
+    --muted-foreground: 0 20% 60%;
 
-    --accent: 347 25% 25%;
-    --accent-foreground: 345 30% 92%;
+    --accent: 0 25% 25%;
+    --accent-foreground: 0 30% 92%;
 
-    --destructive: 350 35% 45%;
-    --destructive-foreground: 345 30% 92%;
+    --destructive: 0 35% 45%;
+    --destructive-foreground: 0 30% 92%;
 
-    --border: 350 15% 22%;
-    --input: 350 15% 22%;
-    --ring: 347 40% 65%;
+    --border: 0 15% 22%;
+    --input: 0 15% 22%;
+    --ring: 0 40% 65%;
 
-    --hero-glow: 347 40% 55%;
-    --mood-bg: 350 15% 18%;
-    --chat-bg: 350 15% 14%;
-    --overlay: 350 15% 8%;
+    --hero-glow: 0 40% 55%;
+    --mood-bg: 0 15% 18%;
+    --chat-bg: 0 15% 14%;
+    --overlay: 0 15% 8%;
     
-    --shadow-soft: 0px 4px 12px hsl(350 20% 5% / 0.3);
-    --shadow-glow: 0 0 40px hsl(347 40% 55% / 0.25);
+    --affirmation: 0 26% 58%;
+    --text-secondary: 0 20% 55%;
+    
+    --shadow-soft: 0px 4px 12px hsl(0 20% 5% / 0.3);
+    --shadow-glow: 0 0 40px hsl(0 40% 55% / 0.25);
 
-    --sidebar-background: 350 15% 10%;
-    --sidebar-foreground: 345 30% 90%;
-    --sidebar-primary: 347 40% 65%;
-    --sidebar-primary-foreground: 350 15% 10%;
-    --sidebar-accent: 350 15% 18%;
-    --sidebar-accent-foreground: 345 30% 92%;
-    --sidebar-border: 350 15% 20%;
-    --sidebar-ring: 347 40% 65%;
+    --sidebar-background: 0 15% 10%;
+    --sidebar-foreground: 0 30% 90%;
+    --sidebar-primary: 0 40% 65%;
+    --sidebar-primary-foreground: 0 15% 10%;
+    --sidebar-accent: 0 15% 18%;
+    --sidebar-accent-foreground: 0 30% 92%;
+    --sidebar-border: 0 15% 20%;
+    --sidebar-ring: 0 40% 65%;
   }
 }
 
