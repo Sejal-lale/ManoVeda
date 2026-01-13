@@ -2,7 +2,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { format, isSameDay, parseISO } from "date-fns";
 import { cn } from "@/lib/utils";
 
-type Mood = "calm" | "okay" | "stressed" | "overwhelmed" | "sad" | "numb";
+type Mood = "calm" | "happy" | "sad" | "anxious" | "tired";
 
 interface MoodEntry {
   id: string;
@@ -18,11 +18,10 @@ interface MoodCalendarProps {
 
 const moodEmojis: Record<Mood, string> = {
   calm: "😌",
-  okay: "🙂",
-  stressed: "😓",
-  overwhelmed: "😵",
-  sad: "😔",
-  numb: "🫥",
+  happy: "🙂",
+  sad: "😓",
+  anxious: "😟",
+  tired: "😔",
 };
 
 export const MoodCalendar = ({ entries, isLoading }: MoodCalendarProps) => {
@@ -36,7 +35,10 @@ export const MoodCalendar = ({ entries, isLoading }: MoodCalendarProps) => {
   if (isLoading) {
     return (
       <div className="flex justify-center py-8">
-        <div className="w-8 h-8 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+        <div 
+          className="w-8 h-8 rounded-full border-2 border-t-transparent animate-spin" 
+          style={{ borderColor: "#E3A6A6", borderTopColor: "transparent" }}
+        />
       </div>
     );
   }
@@ -45,13 +47,21 @@ export const MoodCalendar = ({ entries, isLoading }: MoodCalendarProps) => {
     <div className="flex justify-center">
       <Calendar
         mode="single"
-        className="rounded-xl border border-border bg-card p-4"
+        className="rounded-[20px] p-4"
+        style={{ 
+          backgroundColor: "#F9F1F1",
+          boxShadow: "0 2px 12px rgba(139, 94, 94, 0.08)"
+        }}
         classNames={{
           day: cn(
             "h-10 w-10 p-0 font-normal aria-selected:opacity-100",
-            "hover:bg-accent rounded-full transition-colors"
+            "hover:bg-[#F2DADA] rounded-full transition-colors"
           ),
-          day_today: "bg-primary/10 text-primary font-semibold",
+          day_today: "bg-[#E7B7B7] text-[#5A2E2E] font-semibold",
+          day_selected: "bg-[#E7B7B7] text-[#5A2E2E]",
+          head_cell: "text-[#A98C8C] font-normal text-xs",
+          caption: "text-[#7A4A4A]",
+          nav_button: "text-[#8B5E5E] hover:bg-[#F2DADA]",
         }}
         components={{
           DayContent: ({ date }) => {
@@ -63,7 +73,7 @@ export const MoodCalendar = ({ entries, isLoading }: MoodCalendarProps) => {
                     {moodEmojis[mood]}
                   </span>
                 ) : (
-                  <span className="text-sm text-muted-foreground">
+                  <span className="text-sm" style={{ color: "#C7A9A9" }}>
                     {format(date, "d")}
                   </span>
                 )}

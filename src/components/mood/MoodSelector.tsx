@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 
-export type Mood = "calm" | "okay" | "stressed" | "overwhelmed" | "sad" | "numb";
+export type Mood = "calm" | "happy" | "sad" | "anxious" | "tired";
 
 interface MoodOption {
   id: Mood;
@@ -10,11 +10,10 @@ interface MoodOption {
 
 const moodOptions: MoodOption[] = [
   { id: "calm", emoji: "😌", label: "Calm" },
-  { id: "okay", emoji: "🙂", label: "Okay" },
-  { id: "stressed", emoji: "😓", label: "Stressed" },
-  { id: "overwhelmed", emoji: "😵", label: "Overwhelmed" },
-  { id: "sad", emoji: "😔", label: "Sad" },
-  { id: "numb", emoji: "🫥", label: "Numb" },
+  { id: "happy", emoji: "🙂", label: "Happy" },
+  { id: "sad", emoji: "😓", label: "Sad" },
+  { id: "anxious", emoji: "😟", label: "Anxious" },
+  { id: "tired", emoji: "😔", label: "Tired" },
 ];
 
 interface MoodSelectorProps {
@@ -29,7 +28,7 @@ export const MoodSelector = ({
   disabled,
 }: MoodSelectorProps) => {
   return (
-    <div className="flex justify-center gap-3 sm:gap-4 flex-wrap">
+    <div className="flex justify-center gap-4 sm:gap-5">
       {moodOptions.map((mood) => (
         <button
           key={mood.id}
@@ -38,24 +37,20 @@ export const MoodSelector = ({
           className={cn(
             "w-14 h-14 sm:w-16 sm:h-16 rounded-full",
             "flex items-center justify-center",
-            "bg-card border-2 border-transparent",
             "transition-all duration-300 ease-out",
-            "hover:scale-110 hover:border-primary/30",
-            "focus:outline-none focus:ring-2 focus:ring-ring/30",
+            "focus:outline-none",
             "disabled:opacity-50 disabled:cursor-not-allowed",
-            selectedMood === mood.id && [
-              "border-primary bg-accent",
-              "scale-110 shadow-md",
-              "ring-2 ring-primary/20",
-            ]
+            selectedMood === mood.id
+              ? "scale-105 ring-[3px] ring-[#E3A6A6] bg-[#FBECEC]"
+              : "bg-white/60 hover:bg-white/80 hover:scale-105"
           )}
           title={mood.label}
           aria-label={mood.label}
         >
           <span
             className={cn(
-              "text-2xl sm:text-3xl transition-transform duration-200",
-              selectedMood === mood.id && "animate-soft-bounce"
+              "text-2xl sm:text-3xl transition-transform duration-300",
+              selectedMood === mood.id && "animate-scale-in"
             )}
           >
             {mood.emoji}
