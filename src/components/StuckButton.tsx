@@ -50,12 +50,14 @@ export const StuckButton = ({ onActionRevealed, disabled }: StuckButtonProps) =>
       disabled={disabled || isShuffling}
       className={cn(
         "relative flex flex-col items-center justify-center",
-        "w-56 h-56 sm:w-64 sm:h-64 md:w-72 md:h-72",
+        // Mobile-first sizing with comfortable touch targets
+        "w-52 h-52 sm:w-60 sm:h-60 md:w-72 md:h-72",
         "rounded-[2rem] sm:rounded-[2.5rem]",
         "bg-primary text-primary-foreground",
         "shadow-[var(--shadow-soft)]",
         "transition-all duration-300 ease-out",
-        "hover:scale-[1.02] active:scale-[0.98]",
+        // Touch-friendly feedback
+        "active:scale-[0.96]",
         "focus:outline-none focus:ring-4 focus:ring-ring/30",
         !isShuffling && "animate-breathe",
         isShuffling && "animate-shuffle",
@@ -65,10 +67,11 @@ export const StuckButton = ({ onActionRevealed, disabled }: StuckButtonProps) =>
       {/* Glow effect */}
       <div className="absolute inset-0 rounded-[2rem] sm:rounded-[2.5rem] bg-primary/20 blur-xl -z-10" />
       
-      <span className="text-xl sm:text-2xl md:text-3xl font-medium mb-2">
+      {/* Large, readable text */}
+      <span className="text-2xl sm:text-2xl md:text-3xl font-medium mb-2">
         {isShuffling ? "Finding..." : "I'm Stuck"}
       </span>
-      <span className="text-sm sm:text-base opacity-80">
+      <span className="text-base sm:text-base opacity-80">
         {isShuffling ? "" : "Tap once. I'll decide."}
       </span>
     </button>
