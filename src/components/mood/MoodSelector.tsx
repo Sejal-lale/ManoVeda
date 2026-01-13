@@ -41,8 +41,8 @@ export const MoodSelector = ({
             "focus:outline-none",
             "disabled:opacity-50 disabled:cursor-not-allowed",
             selectedMood === mood.id
-              ? "scale-105 ring-[3px] ring-[#E3A6A6] bg-[#FBECEC]"
-              : "bg-white/60 hover:bg-white/80 hover:scale-105"
+              ? "scale-105 ring-[3px] ring-ring bg-accent"
+              : "bg-card hover:bg-accent hover:scale-105"
           )}
           title={mood.label}
           aria-label={mood.label}

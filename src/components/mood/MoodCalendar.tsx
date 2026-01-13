@@ -35,10 +35,7 @@ export const MoodCalendar = ({ entries, isLoading }: MoodCalendarProps) => {
   if (isLoading) {
     return (
       <div className="flex justify-center py-8">
-        <div 
-          className="w-8 h-8 rounded-full border-2 border-t-transparent animate-spin" 
-          style={{ borderColor: "#E3A6A6", borderTopColor: "transparent" }}
-        />
+        <div className="w-8 h-8 rounded-full border-2 border-ring border-t-transparent animate-spin" />
       </div>
     );
   }
@@ -47,21 +44,17 @@ export const MoodCalendar = ({ entries, isLoading }: MoodCalendarProps) => {
     <div className="flex justify-center">
       <Calendar
         mode="single"
-        className="rounded-[20px] p-4"
-        style={{ 
-          backgroundColor: "#F9F1F1",
-          boxShadow: "0 2px 12px rgba(139, 94, 94, 0.08)"
-        }}
+        className="rounded-[20px] p-4 bg-card shadow-soft"
         classNames={{
           day: cn(
             "h-10 w-10 p-0 font-normal aria-selected:opacity-100",
-            "hover:bg-[#F2DADA] rounded-full transition-colors"
+            "hover:bg-accent rounded-full transition-colors"
           ),
-          day_today: "bg-[#E7B7B7] text-[#5A2E2E] font-semibold",
-          day_selected: "bg-[#E7B7B7] text-[#5A2E2E]",
-          head_cell: "text-[#A98C8C] font-normal text-xs",
-          caption: "text-[#7A4A4A]",
-          nav_button: "text-[#8B5E5E] hover:bg-[#F2DADA]",
+          day_today: "bg-primary text-primary-foreground font-semibold",
+          day_selected: "bg-primary text-primary-foreground",
+          head_cell: "text-muted-foreground font-normal text-xs",
+          caption: "text-foreground",
+          nav_button: "text-muted-foreground hover:bg-accent",
         }}
         components={{
           DayContent: ({ date }) => {
@@ -73,7 +66,7 @@ export const MoodCalendar = ({ entries, isLoading }: MoodCalendarProps) => {
                     {moodEmojis[mood]}
                   </span>
                 ) : (
-                  <span className="text-sm" style={{ color: "#C7A9A9" }}>
+                  <span className="text-sm text-muted-foreground">
                     {format(date, "d")}
                   </span>
                 )}
