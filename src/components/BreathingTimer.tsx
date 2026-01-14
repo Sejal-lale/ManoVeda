@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { X, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useSettings } from "@/contexts/SettingsContext";
 
 interface BreathingTimerProps {
   duration: number; // in seconds
@@ -15,6 +16,8 @@ export const BreathingTimer = ({
   onComplete, 
   onClose 
 }: BreathingTimerProps) => {
+  const { addBreathingMinutes, settings } = useSettings();
+  const startTimeRef = useRef<number>(Date.now());
   const [timeLeft, setTimeLeft] = useState(duration);
   const [showComplete, setShowComplete] = useState(false);
   
@@ -47,6 +50,18 @@ export const BreathingTimer = ({
   };
 
   const handleComplete = () => {
+    // Calculate minutes spent breathing
+    const elapsedMs = Date.now() - startTimeRef.current;
+    const elapsedMinutes = Math.round(elapsedMs / 60000);
+    if (elapsedMinutes > 0) {
+      addBreathingMinutes(elapsedMinutes);
+    }
+    
+    // Haptic feedback if enabled
+    if (settings.hapticFeedback && navigator.vibrate) {
+      navigator.vibrate([50, 100, 50]);
+    }
+    
     setShowComplete(true);
     setTimeout(() => {
       onComplete();

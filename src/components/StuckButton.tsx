@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { useSettings } from "@/contexts/SettingsContext";
 
 interface StuckButtonProps {
   onActionRevealed: (action: StudyAction) => void;
@@ -30,11 +31,18 @@ const studyActions: StudyAction[] = [
 
 export const StuckButton = ({ onActionRevealed, disabled }: StuckButtonProps) => {
   const [isShuffling, setIsShuffling] = useState(false);
+  const { incrementStuckPresses, settings } = useSettings();
 
   const handleClick = () => {
     if (isShuffling || disabled) return;
     
     setIsShuffling(true);
+    incrementStuckPresses();
+    
+    // Haptic feedback if enabled
+    if (settings.hapticFeedback && navigator.vibrate) {
+      navigator.vibrate(50);
+    }
     
     // Shuffle animation duration
     setTimeout(() => {
