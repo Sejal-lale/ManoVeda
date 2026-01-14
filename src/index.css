@@ -246,6 +246,29 @@
   100% { transform: scale(1); }
 }
 
+/* Motion level variants */
+.motion-low * {
+  animation-duration: 0s !important;
+  transition-duration: 0.1s !important;
+}
+
+.motion-playful .animate-breathe {
+  animation-duration: 3s;
+}
+
+.motion-playful .hover-scale:hover {
+  transform: scale(1.08);
+}
+
+/* Reduce stimulation mode */
+.reduce-stimulation {
+  filter: saturate(0.7);
+}
+
+.reduce-stimulation * {
+  animation-play-state: paused !important;
+}
+
 @layer base {
   * {
     @apply border-border;
