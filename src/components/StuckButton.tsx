@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { useSettings } from "@/contexts/SettingsContext";
+import { useAdmin, AdminTask } from "@/contexts/AdminContext";
 
 interface StuckButtonProps {
   onActionRevealed: (action: StudyAction) => void;
@@ -14,24 +15,26 @@ export interface StudyAction {
   category: "low-energy" | "active" | "body-based" | "anti-perfection" | "chaos";
 }
 
-const studyActions: StudyAction[] = [
-  { id: "1", text: "Open your notes and rewrite one line.", duration: "5 min", category: "low-energy" },
-  { id: "2", text: "Read one paragraph while standing.", duration: "5 min", category: "low-energy" },
-  { id: "3", text: "Highlight only the headings in your notes.", duration: "5 min", category: "low-energy" },
-  { id: "4", text: "Explain one concept out loud to your phone.", duration: "5 min", category: "active" },
-  { id: "5", text: "Teach your phone one thing you learned today.", duration: "7 min", category: "active" },
-  { id: "6", text: "Walk around the room while recalling one topic.", duration: "5 min", category: "body-based" },
-  { id: "7", text: "Do 3 stretches, then recall one fact.", duration: "5 min", category: "body-based" },
-  { id: "8", text: "Write the worst possible answer to a question.", duration: "5 min", category: "anti-perfection" },
-  { id: "9", text: "Make the messiest notes you can for 5 minutes.", duration: "5 min", category: "anti-perfection" },
-  { id: "10", text: "Open a random page and read one sentence.", duration: "5 min", category: "chaos" },
-  { id: "11", text: "Set a timer for 5 minutes. Stop when it rings.", duration: "5 min", category: "chaos" },
-  { id: "12", text: "Write down 3 words about what you're studying.", duration: "5 min", category: "low-energy" },
-];
+// Map admin categories to study action categories
+const categoryMap: Record<string, StudyAction['category']> = {
+  breathing: 'low-energy',
+  reading: 'low-energy',
+  writing: 'active',
+  movement: 'body-based',
+};
+
+// Convert AdminTask to StudyAction
+const taskToAction = (task: AdminTask): StudyAction => ({
+  id: task.id,
+  text: task.text,
+  duration: task.difficulty === 'very_easy' ? '3 min' : task.difficulty === 'easy' ? '5 min' : '7 min',
+  category: categoryMap[task.category] || 'low-energy',
+});
 
 export const StuckButton = ({ onActionRevealed, disabled }: StuckButtonProps) => {
   const [isShuffling, setIsShuffling] = useState(false);
   const { incrementStuckPresses, settings } = useSettings();
+  const { content, getRandomTask, preview, getPreviewTask } = useAdmin();
 
   const handleClick = () => {
     if (isShuffling || disabled) return;
@@ -46,9 +49,22 @@ export const StuckButton = ({ onActionRevealed, disabled }: StuckButtonProps) =>
     
     // Shuffle animation duration
     setTimeout(() => {
-      const randomAction = studyActions[Math.floor(Math.random() * studyActions.length)];
+      // Use preview task if in preview mode with force enabled, otherwise random
+      let selectedTask: AdminTask | null = null;
+      
+      if (preview.isActive && preview.forceTask) {
+        selectedTask = getPreviewTask();
+      }
+      
+      if (!selectedTask) {
+        selectedTask = getRandomTask();
+      }
+      
       setIsShuffling(false);
-      onActionRevealed(randomAction);
+      
+      if (selectedTask) {
+        onActionRevealed(taskToAction(selectedTask));
+      }
     }, 1200);
   };
 
@@ -75,12 +91,12 @@ export const StuckButton = ({ onActionRevealed, disabled }: StuckButtonProps) =>
       {/* Glow effect */}
       <div className="absolute inset-0 rounded-[2rem] sm:rounded-[2.5rem] bg-primary/20 blur-xl -z-10" />
       
-      {/* Large, readable text */}
+      {/* Large, readable text - uses admin content */}
       <span className="text-2xl sm:text-2xl md:text-3xl font-medium mb-2">
-        {isShuffling ? "Finding..." : "I'm Stuck"}
+        {isShuffling ? content.buttonText.shufflingText : content.buttonText.stuckButton}
       </span>
       <span className="text-base sm:text-base opacity-80">
-        {isShuffling ? "" : "Tap once. I'll decide."}
+        {isShuffling ? "" : content.buttonText.stuckSubtext}
       </span>
     </button>
   );

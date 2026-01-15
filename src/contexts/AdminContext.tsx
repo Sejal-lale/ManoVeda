@@ -70,6 +70,14 @@ export interface GameFeelRules {
   rewardTypes: ('visual' | 'sensory' | 'animation')[];
 }
 
+// Preview state
+export interface PreviewState {
+  isActive: boolean;
+  selectedTaskId: string | null;
+  selectedAnimationId: string | null;
+  forceTask: boolean; // When true, selected task is forced (no random)
+}
+
 // Default values
 const DEFAULT_TASKS: AdminTask[] = [
   { id: '1', text: 'Open your notes and rewrite one line.', difficulty: 'very_easy', category: 'writing', enabled: true, order: 1 },
@@ -123,10 +131,25 @@ const DEFAULT_GAME_RULES: GameFeelRules = {
   rewardTypes: ['visual', 'sensory', 'animation'],
 };
 
+const DEFAULT_PREVIEW: PreviewState = {
+  isActive: false,
+  selectedTaskId: null,
+  selectedAnimationId: null,
+  forceTask: false,
+};
+
 interface AdminContextType {
   // Admin access
   isAdmin: boolean;
   setIsAdmin: (value: boolean) => void;
+  
+  // Preview Mode
+  preview: PreviewState;
+  setPreviewActive: (active: boolean) => void;
+  setPreviewTask: (taskId: string | null) => void;
+  setPreviewAnimation: (animationId: string | null) => void;
+  setForcePreviewTask: (force: boolean) => void;
+  getPreviewTask: () => AdminTask | null;
   
   // Tasks
   tasks: AdminTask[];
@@ -135,6 +158,7 @@ interface AdminContextType {
   deleteTask: (id: string) => void;
   reorderTasks: (taskIds: string[]) => void;
   getEnabledTasks: () => AdminTask[];
+  getRandomTask: () => AdminTask | null;
   
   // Animations
   animations: AnimationConfig[];
@@ -168,6 +192,11 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     return localStorage.getItem('manoveda-admin') === 'true';
   });
 
+  const [preview, setPreview] = useState<PreviewState>(() => {
+    const saved = localStorage.getItem('manoveda-admin-preview');
+    return saved ? JSON.parse(saved) : DEFAULT_PREVIEW;
+  });
+
   const [tasks, setTasks] = useState<AdminTask[]>(() => {
     const saved = localStorage.getItem('manoveda-admin-tasks');
     return saved ? JSON.parse(saved) : DEFAULT_TASKS;
@@ -199,6 +228,10 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   }, [isAdmin]);
 
   useEffect(() => {
+    localStorage.setItem('manoveda-admin-preview', JSON.stringify(preview));
+  }, [preview]);
+
+  useEffect(() => {
     localStorage.setItem('manoveda-admin-tasks', JSON.stringify(tasks));
   }, [tasks]);
 
@@ -217,6 +250,28 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   useEffect(() => {
     localStorage.setItem('manoveda-admin-gamerules', JSON.stringify(gameRules));
   }, [gameRules]);
+
+  // Preview functions
+  const setPreviewActive = (active: boolean) => {
+    setPreview(prev => ({ ...prev, isActive: active }));
+  };
+
+  const setPreviewTask = (taskId: string | null) => {
+    setPreview(prev => ({ ...prev, selectedTaskId: taskId }));
+  };
+
+  const setPreviewAnimation = (animationId: string | null) => {
+    setPreview(prev => ({ ...prev, selectedAnimationId: animationId }));
+  };
+
+  const setForcePreviewTask = (force: boolean) => {
+    setPreview(prev => ({ ...prev, forceTask: force }));
+  };
+
+  const getPreviewTask = (): AdminTask | null => {
+    if (!preview.selectedTaskId) return null;
+    return tasks.find(t => t.id === preview.selectedTaskId) || null;
+  };
 
   // Task functions
   const addTask = (task: Omit<AdminTask, 'id' | 'order'>) => {
@@ -248,12 +303,32 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
   const getEnabledTasks = () => tasks.filter(t => t.enabled).sort((a, b) => a.order - b.order);
 
+  const getRandomTask = (): AdminTask | null => {
+    // If preview mode with forced task, return that task
+    if (preview.isActive && preview.forceTask && preview.selectedTaskId) {
+      return tasks.find(t => t.id === preview.selectedTaskId) || null;
+    }
+    
+    const enabled = getEnabledTasks();
+    if (enabled.length === 0) return null;
+    return enabled[Math.floor(Math.random() * enabled.length)];
+  };
+
   // Animation functions
   const updateAnimation = (id: string, updates: Partial<AnimationConfig>) => {
     setAnimations(prev => prev.map(a => a.id === id ? { ...a, ...updates } : a));
   };
 
-  const getActiveTransition = (id: string) => animations.find(a => a.id === id && a.enabled);
+  const getActiveTransition = (id: string) => {
+    // If preview mode with selected animation, use that for matching transitions
+    if (preview.isActive && preview.selectedAnimationId) {
+      const previewAnim = animations.find(a => a.id === preview.selectedAnimationId);
+      if (previewAnim && (id === 'stuck_entry' || id === 'task_reveal')) {
+        return previewAnim;
+      }
+    }
+    return animations.find(a => a.id === id && a.enabled);
+  };
 
   // Theme functions
   const addTheme = (theme: Omit<AdminTheme, 'id' | 'isBuiltIn'>) => {
@@ -319,12 +394,19 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     <AdminContext.Provider value={{
       isAdmin,
       setIsAdmin,
+      preview,
+      setPreviewActive,
+      setPreviewTask,
+      setPreviewAnimation,
+      setForcePreviewTask,
+      getPreviewTask,
       tasks,
       addTask,
       updateTask,
       deleteTask,
       reorderTasks,
       getEnabledTasks,
+      getRandomTask,
       animations,
       updateAnimation,
       getActiveTransition,
