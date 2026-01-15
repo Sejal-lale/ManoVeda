@@ -5,6 +5,7 @@ import { StuckButton, StudyAction } from "@/components/StuckButton";
 import { BreathingTimer } from "@/components/BreathingTimer";
 import { ChatModal } from "@/components/ChatModal";
 import { ActionButton } from "@/components/ui/ActionButton";
+import { PreviewIndicator } from "@/components/admin/PreviewIndicator";
 import { Heart, MessageCircle } from "lucide-react";
 
 type Mood = "calm" | "okay" | "stressed" | "overwhelmed" | "sad" | "numb";
@@ -41,6 +42,7 @@ const Index = () => {
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-accent/20 pointer-events-none" />
       
       <Header />
+      <PreviewIndicator />
 
       <main className="relative min-h-screen flex flex-col items-center justify-center px-4 pt-16 pb-8 safe-area-inset-bottom">
         <div className="flex flex-col items-center gap-8 sm:flex-row sm:gap-10 md:gap-16">
