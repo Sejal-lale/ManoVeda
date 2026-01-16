@@ -30,7 +30,7 @@ export const MomentumLevel = ({ level, progress, compact = false }: MomentumLeve
           )} />
         </div>
         
-        <div className="flex flex-col">
+        <div className="flex flex-col whitespace-nowrap">
           <span className={cn(
             "font-semibold text-foreground",
             compact ? "text-xs" : "text-sm"
