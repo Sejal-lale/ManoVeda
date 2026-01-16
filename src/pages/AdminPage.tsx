@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, ListTodo, Sparkles, Palette, Type, Gamepad2, Eye, Lock, Play } from "lucide-react";
+import { ArrowLeft, ListTodo, Sparkles, Palette, Type, Gamepad2, Eye, Lock, Play, Flame } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAdmin } from "@/contexts/AdminContext";
 import { Button } from "@/components/ui/button";
@@ -10,15 +10,17 @@ import { AnimationController } from "@/components/admin/AnimationController";
 import { ThemeManager } from "@/components/admin/ThemeManager";
 import { ContentEditor } from "@/components/admin/ContentEditor";
 import { GameRulesEditor } from "@/components/admin/GameRulesEditor";
+import { StreakProgressionEditor } from "@/components/admin/StreakProgressionEditor";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 
-type AdminSection = 'tasks' | 'animations' | 'themes' | 'content' | 'rules' | 'preview';
+type AdminSection = 'tasks' | 'animations' | 'themes' | 'content' | 'rules' | 'preview' | 'streaks';
 
 const sections = [
   { id: 'preview' as AdminSection, label: 'Preview Control', icon: Eye },
   { id: 'tasks' as AdminSection, label: "I'm Stuck Tasks", icon: ListTodo },
+  { id: 'streaks' as AdminSection, label: 'Streak & Levels', icon: Flame },
   { id: 'animations' as AdminSection, label: 'Animations', icon: Sparkles },
   { id: 'themes' as AdminSection, label: 'Themes', icon: Palette },
   { id: 'content' as AdminSection, label: 'Copy & Language', icon: Type },
@@ -235,6 +237,8 @@ const AdminPage = () => {
         return <PreviewControlPanel />;
       case 'tasks':
         return <TaskManager />;
+      case 'streaks':
+        return <StreakProgressionEditor />;
       case 'animations':
         return <AnimationController />;
       case 'themes':

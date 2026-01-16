@@ -41,6 +41,78 @@ export type Database = {
         }
         Relationships: []
       }
+      task_completions: {
+        Row: {
+          completed_at: string
+          id: string
+          level_at_completion: number
+          session_id: string
+          streak_at_completion: number
+          task_id: string
+          task_text: string
+        }
+        Insert: {
+          completed_at?: string
+          id?: string
+          level_at_completion?: number
+          session_id: string
+          streak_at_completion?: number
+          task_id: string
+          task_text: string
+        }
+        Update: {
+          completed_at?: string
+          id?: string
+          level_at_completion?: number
+          session_id?: string
+          streak_at_completion?: number
+          task_id?: string
+          task_text?: string
+        }
+        Relationships: []
+      }
+      user_progress: {
+        Row: {
+          created_at: string
+          current_level: number
+          id: string
+          last_completion_date: string | null
+          last_recovery_used: string | null
+          longest_streak: number
+          recovery_tokens: number
+          session_id: string
+          streak_count: number
+          total_completions: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          current_level?: number
+          id?: string
+          last_completion_date?: string | null
+          last_recovery_used?: string | null
+          longest_streak?: number
+          recovery_tokens?: number
+          session_id: string
+          streak_count?: number
+          total_completions?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          current_level?: number
+          id?: string
+          last_completion_date?: string | null
+          last_recovery_used?: string | null
+          longest_streak?: number
+          recovery_tokens?: number
+          session_id?: string
+          streak_count?: number
+          total_completions?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
