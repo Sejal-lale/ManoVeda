@@ -139,14 +139,14 @@ const PreviewControlPanel = () => {
         </CardHeader>
         <CardContent className="space-y-4">
           <Select
-            value={preview.selectedAnimationId || ""}
-            onValueChange={(v) => setPreviewAnimation(v || null)}
+            value={preview.selectedAnimationId || "default"}
+            onValueChange={(v) => setPreviewAnimation(v === "default" ? null : v)}
           >
             <SelectTrigger>
               <SelectValue placeholder="Use default animation settings" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Use default settings</SelectItem>
+              <SelectItem value="default">Use default settings</SelectItem>
               {animations.map((anim) => (
                 <SelectItem key={anim.id} value={anim.id}>
                   <div className="flex flex-col items-start">
