@@ -63,14 +63,12 @@ const Index = () => {
       <Header />
       <PreviewIndicator />
 
-      {/* Progress Display - Above CTA with fixed margin */}
-      <div className="fixed top-20 left-0 right-0 z-5 flex justify-center pointer-events-none">
-        <div className="pointer-events-auto">
-          <ProgressHeader />
-        </div>
+      {/* Progress Display - Top of screen */}
+      <div className="fixed top-14 left-0 right-0 z-30 bg-background/80 backdrop-blur-sm border-b border-border/30">
+        <ProgressHeader />
       </div>
 
-      <main className="relative min-h-screen flex flex-col items-center justify-center px-4 pb-8 safe-area-inset-bottom z-10">
+      <main className="relative min-h-screen flex flex-col items-center justify-center px-4 pt-28 pb-8 safe-area-inset-bottom">
         <div className="flex flex-col items-center gap-8 sm:flex-row sm:gap-10 md:gap-16">
           {/* Mood Button */}
           <div className="order-2 sm:order-1 flex-shrink-0">
