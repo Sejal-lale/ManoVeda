@@ -65,7 +65,7 @@ export const StuckButton = ({ onActionRevealed, disabled }: StuckButtonProps) =>
       if (selectedTask) {
         onActionRevealed(taskToAction(selectedTask));
       }
-    }, 1200);
+    }, 1000);
   };
 
   return (
@@ -74,30 +74,39 @@ export const StuckButton = ({ onActionRevealed, disabled }: StuckButtonProps) =>
       disabled={disabled || isShuffling}
       className={cn(
         "relative flex flex-col items-center justify-center",
-        // Mobile-first sizing with comfortable touch targets
-        "w-52 h-52 sm:w-60 sm:h-60 md:w-72 md:h-72",
-        "rounded-[2rem] sm:rounded-[2.5rem]",
-        "bg-primary text-primary-foreground",
-        "shadow-[var(--shadow-soft)]",
-        "transition-all duration-300 ease-out",
-        // Touch-friendly feedback
-        "active:scale-[0.96]",
-        "focus:outline-none focus:ring-4 focus:ring-ring/30",
-        !isShuffling && "animate-breathe",
+        // Sizing - confident, not oversized
+        "w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64",
+        // Reduced corner radius for professionalism
+        "rounded-2xl sm:rounded-3xl",
+        // Deep primary with subtle gradient
+        "bg-gradient-to-b from-primary to-primary/90",
+        "text-primary-foreground",
+        // Sharp, professional shadow
+        "shadow-lg",
+        // Crisp transitions
+        "transition-all duration-150 ease-out",
+        // Confident press effect
+        "hover:shadow-xl hover:-translate-y-0.5",
+        "active:scale-[0.98] active:shadow-md active:translate-y-0",
+        "focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
         isShuffling && "animate-shuffle",
-        disabled && "opacity-60 cursor-not-allowed"
+        disabled && "opacity-50 cursor-not-allowed hover:shadow-lg hover:translate-y-0"
       )}
     >
-      {/* Glow effect */}
-      <div className="absolute inset-0 rounded-[2rem] sm:rounded-[2.5rem] bg-primary/20 blur-xl -z-10" />
+      {/* Subtle inner highlight */}
+      <div className="absolute inset-0 rounded-2xl sm:rounded-3xl bg-gradient-to-b from-white/10 to-transparent pointer-events-none" />
       
-      {/* Large, readable text - uses admin content */}
-      <span className="text-2xl sm:text-2xl md:text-3xl font-medium mb-2">
+      {/* Main text - bold and authoritative */}
+      <span className="text-2xl sm:text-3xl font-bold tracking-tight">
         {isShuffling ? content.buttonText.shufflingText : content.buttonText.stuckButton}
       </span>
-      <span className="text-base sm:text-base opacity-80">
-        {isShuffling ? "" : content.buttonText.stuckSubtext}
-      </span>
+      
+      {/* Subtext - smaller, lighter, doesn't compete */}
+      {!isShuffling && (
+        <span className="text-sm sm:text-base font-medium opacity-70 mt-1">
+          {content.buttonText.stuckSubtext}
+        </span>
+      )}
     </button>
   );
 };

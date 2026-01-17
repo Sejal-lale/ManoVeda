@@ -10,59 +10,81 @@ interface StreakDisplayProps {
 export const StreakDisplay = ({ streakCount, isAtRisk = false, compact = false }: StreakDisplayProps) => {
   const hasStreak = streakCount > 0;
   
-  return (
-    <div 
-      className={cn(
-        "flex items-center gap-2",
-        compact ? "flex-col" : "flex-row",
-        isAtRisk && hasStreak && "animate-pulse"
-      )}
-    >
+  if (compact) {
+    return (
       <div className={cn(
-        "relative flex items-center justify-center",
-        compact ? "w-10 h-10" : "w-12 h-12",
-        "rounded-full",
-        hasStreak ? "bg-orange-500/20" : "bg-muted",
-        isAtRisk && hasStreak && "ring-2 ring-orange-400/50"
+        "flex items-center gap-2 px-3 py-2 rounded-lg",
+        isAtRisk && hasStreak && "bg-risk/10"
       )}>
-        {hasStreak ? (
+        <div className={cn(
+          "flex items-center justify-center w-7 h-7 rounded-md",
+          hasStreak ? "bg-streak/15" : "bg-secondary"
+        )}>
           <Flame 
             className={cn(
-              "text-orange-500",
-              compact ? "w-5 h-5" : "w-6 h-6",
-              isAtRisk ? "animate-bounce" : "animate-pulse"
-            )} 
+              "w-4 h-4",
+              hasStreak ? "text-streak" : "text-muted-foreground"
+            )}
+            strokeWidth={2}
           />
-        ) : (
-          <Flame 
-            className={cn(
-              "text-muted-foreground/40",
-              compact ? "w-5 h-5" : "w-6 h-6"
-            )} 
-          />
-        )}
+        </div>
         
-        {isAtRisk && hasStreak && (
-          <AlertTriangle className="absolute -top-1 -right-1 w-4 h-4 text-orange-400" />
-        )}
+        <div className="flex flex-col leading-none">
+          <div className="flex items-center gap-1">
+            <span className={cn(
+              "text-base font-bold tabular-nums",
+              hasStreak ? "text-foreground" : "text-muted-foreground"
+            )}>
+              {streakCount}
+            </span>
+            {isAtRisk && hasStreak && (
+              <AlertTriangle className="w-3 h-3 text-risk" />
+            )}
+          </div>
+          <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">
+            Streak
+          </span>
+        </div>
+      </div>
+    );
+  }
+  
+  // Full display (not compact)
+  return (
+    <div className={cn(
+      "flex items-center gap-3 p-4 rounded-xl bg-card shadow-sm",
+      isAtRisk && hasStreak && "ring-1 ring-risk/30"
+    )}>
+      <div className={cn(
+        "flex items-center justify-center w-12 h-12 rounded-lg",
+        hasStreak ? "bg-streak/15" : "bg-secondary"
+      )}>
+        <Flame 
+          className={cn(
+            "w-6 h-6",
+            hasStreak ? "text-streak" : "text-muted-foreground"
+          )}
+          strokeWidth={2}
+        />
       </div>
       
-      <div className={cn(
-        "flex flex-col",
-        compact ? "items-center" : "items-start"
-      )}>
-        <span className={cn(
-          "font-bold tabular-nums",
-          compact ? "text-lg" : "text-2xl",
-          hasStreak ? "text-foreground" : "text-muted-foreground"
-        )}>
-          {streakCount}
-        </span>
-        <span className={cn(
-          "text-muted-foreground",
-          compact ? "text-[10px]" : "text-xs"
-        )}>
-          {isAtRisk && hasStreak ? "At Risk!" : "Streak"}
+      <div className="flex flex-col">
+        <div className="flex items-center gap-2">
+          <span className={cn(
+            "text-2xl font-bold tabular-nums",
+            hasStreak ? "text-foreground" : "text-muted-foreground"
+          )}>
+            {streakCount}
+          </span>
+          {isAtRisk && hasStreak && (
+            <span className="flex items-center gap-1 text-xs font-medium text-risk">
+              <AlertTriangle className="w-3 h-3" />
+              At Risk
+            </span>
+          )}
+        </div>
+        <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+          Day Streak
         </span>
       </div>
     </div>

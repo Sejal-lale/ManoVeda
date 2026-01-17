@@ -57,21 +57,19 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-accent/20 pointer-events-none" />
-      
+    <div className="min-h-screen bg-background relative">
       <Header />
       <PreviewIndicator />
 
-      {/* Progress Display - Top of screen */}
-      <div className="fixed top-14 left-0 right-0 z-30 bg-background/80 backdrop-blur-sm border-b border-border/30">
+      {/* Progress Display - Compact status bar */}
+      <div className="fixed top-14 left-0 right-0 z-30">
         <ProgressHeader />
       </div>
 
-      <main className="relative min-h-screen flex flex-col items-center justify-center px-4 pt-28 pb-8 safe-area-inset-bottom">
-        <div className="flex flex-col items-center gap-8 sm:flex-row sm:gap-10 md:gap-16">
+      <main className="relative min-h-screen flex flex-col items-center justify-center px-4 pt-24 pb-8">
+        <div className="flex flex-col items-center gap-6 sm:flex-row sm:gap-8 md:gap-12">
           {/* Mood Button */}
-          <div className="order-2 sm:order-1 flex-shrink-0">
+          <div className="order-2 sm:order-1">
             <ActionButton
               icon={Heart}
               label="Mood"
@@ -80,15 +78,15 @@ const Index = () => {
           </div>
 
           {/* Main Stuck Button */}
-          <div className="order-1 sm:order-2 flex-shrink-0">
+          <div className="order-1 sm:order-2">
             <StuckButton 
               onActionRevealed={handleActionRevealed}
               disabled={isTimerActive}
             />
           </div>
 
-          {/* Talk Button - Now matches Mood button */}
-          <div className="order-3 flex-shrink-0">
+          {/* Talk Button */}
+          <div className="order-3">
             <ActionButton
               icon={MessageCircle}
               label="Talk"
