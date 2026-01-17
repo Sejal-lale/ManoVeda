@@ -3,11 +3,15 @@ import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { useSettings } from "@/contexts/SettingsContext";
 
-export const Header = () => {
+interface HeaderProps {
+  className?: string;
+}
+
+export const Header = ({ className }: HeaderProps) => {
   const { profile } = useSettings();
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-40 px-4 py-3 sm:px-6 sm:py-4">
+    <header className={cn("fixed top-0 left-0 right-0 z-40 px-4 py-3 sm:px-6 sm:py-4", className)}>
       <div className="max-w-lg mx-auto flex items-center justify-between">
         {/* Profile */}
         <Link
