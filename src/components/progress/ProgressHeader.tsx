@@ -13,9 +13,8 @@ export const ProgressHeader = ({ className }: ProgressHeaderProps) => {
   
   if (loading) {
     return (
-      <div className={cn("flex items-center justify-center gap-8", className)}>
-        <Skeleton className="h-16 w-20" />
-        <Skeleton className="h-16 w-32" />
+      <div className={cn("flex items-center justify-center py-3", className)}>
+        <Skeleton className="h-12 w-48 rounded-xl" />
       </div>
     );
   }
@@ -27,23 +26,23 @@ export const ProgressHeader = ({ className }: ProgressHeaderProps) => {
   const atRisk = isStreakAtRisk();
   
   return (
-    <div className={cn(
-      "flex items-center justify-center gap-8 py-4",
-      className
-    )}>
-      <StreakDisplay 
-        streakCount={progress.streak_count} 
-        isAtRisk={atRisk}
-        compact
-      />
-      
-      <div className="w-px h-10 bg-border" />
-      
-      <MomentumLevel 
-        level={currentLevel.level} 
-        progress={levelProgress}
-        compact
-      />
+    <div className={cn("flex items-center justify-center py-2", className)}>
+      {/* Compact status pill */}
+      <div className="flex items-center gap-1 bg-card rounded-xl shadow-sm px-1 py-1">
+        <StreakDisplay 
+          streakCount={progress.streak_count} 
+          isAtRisk={atRisk}
+          compact
+        />
+        
+        <div className="w-px h-8 bg-border mx-1" />
+        
+        <MomentumLevel 
+          level={currentLevel.level} 
+          progress={levelProgress}
+          compact
+        />
+      </div>
     </div>
   );
 };
