@@ -1,14 +1,16 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { cn } from "@/lib/utils";
 import { Header } from "@/components/Header";
 import { StuckButton, StudyAction } from "@/components/StuckButton";
 import { BreathingTimer } from "@/components/BreathingTimer";
 import { ChatModal } from "@/components/ChatModal";
 import { ActionButton } from "@/components/ui/ActionButton";
-import { PreviewIndicator } from "@/components/admin/PreviewIndicator";
+import { AdminOverrideBanner } from "@/components/admin/AdminOverrideBanner";
 import { ProgressHeader } from "@/components/progress/ProgressHeader";
 import { VictoryFeedback } from "@/components/progress/VictoryFeedback";
 import { useProgress } from "@/hooks/useProgress";
+import { useAdmin } from "@/contexts/AdminContext";
 import { Heart, MessageCircle } from "lucide-react";
 
 type Mood = "calm" | "okay" | "stressed" | "overwhelmed" | "sad" | "numb";
@@ -56,17 +58,21 @@ const Index = () => {
     return match ? parseInt(match[1]) * 60 : 300;
   };
 
+  // Check if admin banner is active for layout offset
+  const { preview, isAdmin } = useAdmin();
+  const showAdminBanner = isAdmin && preview.isActive;
+
   return (
     <div className="min-h-screen bg-background relative">
-      <Header />
-      <PreviewIndicator />
+      <AdminOverrideBanner />
+      <Header className={showAdminBanner ? "top-10" : ""} />
 
       {/* Progress Display - Compact status bar */}
-      <div className="fixed top-14 left-0 right-0 z-30">
+      <div className={cn("fixed left-0 right-0 z-30", showAdminBanner ? "top-24" : "top-14")}>
         <ProgressHeader />
       </div>
 
-      <main className="relative min-h-screen flex flex-col items-center justify-center px-4 pt-24 pb-8">
+      <main className={cn("relative min-h-screen flex flex-col items-center justify-center px-4 pb-8", showAdminBanner ? "pt-32" : "pt-24")}>
         <div className="flex flex-col items-center gap-6 sm:flex-row sm:gap-8 md:gap-12">
           {/* Mood Button */}
           <div className="order-2 sm:order-1">
