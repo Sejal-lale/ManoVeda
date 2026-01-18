@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Shield, AlertTriangle, Power, ChevronDown, ChevronRight } from "lucide-react";
+import { Shield, Lock, Unlock, Power, ChevronDown, ChevronRight, AlertTriangle, Info } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAdmin } from "@/contexts/AdminContext";
 import { Switch } from "@/components/ui/switch";
@@ -7,9 +7,42 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
+// System-guarded items with behavioral reasoning
+const GUARDED_FEATURES = [
+  {
+    id: 'leaderboards',
+    key: 'allowLeaderboards' as const,
+    name: 'Leaderboards',
+    replacedBy: 'Personal Momentum Tracking',
+    reason: 'Social comparison increases anxiety under stress',
+  },
+  {
+    id: 'social',
+    key: 'allowSocialComparison' as const,
+    name: 'Social Comparison',
+    replacedBy: 'Private Progress Only',
+    reason: 'Comparison triggers shame in vulnerable states',
+  },
+  {
+    id: 'loss',
+    key: 'allowLossPenalties' as const,
+    name: 'Loss Penalties',
+    replacedBy: 'Momentum Pause (No Reset)',
+    reason: 'Punishment increases avoidance behavior',
+  },
+  {
+    id: 'public',
+    key: 'allowPublicScores' as const,
+    name: 'Public Scores',
+    replacedBy: 'Session-Only Visibility',
+    reason: 'External judgment disrupts intrinsic motivation',
+  },
+];
+
 export const AccessSafetySection = () => {
   const { gameRules, updateGameRules, preview, setPreviewActive } = useAdmin();
-  const [rulesOpen, setRulesOpen] = useState(true);
+  const [progressionOpen, setProgressionOpen] = useState(true);
+  const [guardedOpen, setGuardedOpen] = useState(false);
   const [killswitchOpen, setKillswitchOpen] = useState(false);
 
   const toggleRewardType = (type: 'visual' | 'sensory' | 'animation') => {
@@ -20,50 +53,55 @@ export const AccessSafetySection = () => {
     updateGameRules({ rewardTypes: updated });
   };
 
+  const activeProgressionCount = [
+    gameRules.allowStreaks,
+    gameRules.allowLevels,
+    gameRules.allowBadges,
+    gameRules.allowVisualProgression,
+  ].filter(Boolean).length;
+
   return (
     <div className="space-y-6">
       {/* Section Header */}
       <div className="space-y-1">
         <h2 className="text-lg font-semibold text-foreground">Access & Safety</h2>
         <p className="text-sm text-muted-foreground">
-          Safeguards, limits, and emergency controls.
+          Control progression systems and safeguards.
         </p>
       </div>
 
-      {/* Design Principles */}
-      <Card className="border-accent bg-accent/10">
-        <CardContent className="p-4">
-          <div className="flex gap-3">
-            <Shield className="w-5 h-5 text-accent-foreground flex-shrink-0 mt-0.5" />
-            <div className="space-y-1">
-              <p className="text-sm font-medium text-foreground">Emotion-First Design</p>
-              <p className="text-xs text-muted-foreground">
-                Points, competitive elements, and failure states are disabled by design 
-                to maintain emotional safety.
-              </p>
-            </div>
+      {/* Pinned System Rule Banner */}
+      <div className="p-4 rounded-lg bg-accent/20 border border-accent/30">
+        <div className="flex gap-3 items-start">
+          <Shield className="w-5 h-5 text-accent-foreground flex-shrink-0 mt-0.5" />
+          <div className="space-y-1">
+            <p className="text-sm font-semibold text-foreground">Emotion-First Design</p>
+            <p className="text-xs text-muted-foreground">
+              Gamification is private, cumulative, and never subtractive. 
+              Progress rewards showing up — not winning.
+            </p>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
-      {/* Game Rules */}
-      <Collapsible open={rulesOpen} onOpenChange={setRulesOpen}>
-        <Card>
+      {/* Allowed Progression Systems */}
+      <Collapsible open={progressionOpen} onOpenChange={setProgressionOpen}>
+        <Card className="border-primary/20">
           <CollapsibleTrigger asChild>
             <CardHeader className="cursor-pointer hover:bg-accent/50 transition-colors rounded-t-lg">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center">
-                    <AlertTriangle className="w-5 h-5 text-muted-foreground" />
+                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                    <Unlock className="w-5 h-5 text-primary" />
                   </div>
                   <div>
-                    <CardTitle className="text-base">Gamification Rules</CardTitle>
+                    <CardTitle className="text-base">Progression Systems</CardTitle>
                     <CardDescription className="text-xs">
-                      Protected settings for user wellbeing
+                      {activeProgressionCount} of 4 systems active
                     </CardDescription>
                   </div>
                 </div>
-                {rulesOpen ? (
+                {progressionOpen ? (
                   <ChevronDown className="w-5 h-5 text-muted-foreground" />
                 ) : (
                   <ChevronRight className="w-5 h-5 text-muted-foreground" />
@@ -73,79 +111,162 @@ export const AccessSafetySection = () => {
           </CollapsibleTrigger>
 
           <CollapsibleContent>
-            <CardContent className="pt-0 space-y-4">
-              {/* Disallowed - Locked */}
-              <div className="space-y-2">
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                  Disallowed (Locked)
-                </p>
-                <div className="space-y-2 opacity-50">
-                  <div className="flex items-center justify-between p-3 rounded-lg bg-muted/30">
-                    <div>
-                      <p className="text-sm font-medium">Points System</p>
-                      <p className="text-xs text-muted-foreground">Score tracking</p>
-                    </div>
-                    <Switch checked={false} disabled />
-                  </div>
-                  <div className="flex items-center justify-between p-3 rounded-lg bg-muted/30">
-                    <div>
-                      <p className="text-sm font-medium">Competitive Streaks</p>
-                      <p className="text-xs text-muted-foreground">Leaderboards & comparisons</p>
-                    </div>
-                    <Switch checked={false} disabled />
-                  </div>
-                  <div className="flex items-center justify-between p-3 rounded-lg bg-muted/30">
-                    <div>
-                      <p className="text-sm font-medium">Failure Penalties</p>
-                      <p className="text-xs text-muted-foreground">Negative feedback</p>
-                    </div>
-                    <Switch checked={false} disabled />
-                  </div>
+            <CardContent className="pt-0 space-y-2">
+              <div className="flex items-center justify-between p-3 rounded-lg hover:bg-accent/50">
+                <div>
+                  <p className="text-sm font-medium">Streaks</p>
+                  <p className="text-xs text-muted-foreground">Track consecutive days of showing up</p>
                 </div>
+                <Switch
+                  checked={gameRules.allowStreaks}
+                  onCheckedChange={(v) => updateGameRules({ allowStreaks: v })}
+                />
               </div>
-
-              {/* Allowed Rewards */}
-              <div className="space-y-2 pt-3 border-t border-border">
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                  Allowed Rewards
-                </p>
-                <div className="space-y-2">
-                  <label className="flex items-center gap-3 p-3 rounded-lg hover:bg-accent/50 cursor-pointer">
-                    <Checkbox
-                      checked={gameRules.rewardTypes.includes('visual')}
-                      onCheckedChange={() => toggleRewardType('visual')}
-                    />
-                    <div>
-                      <p className="text-sm font-medium">Visual Rewards</p>
-                      <p className="text-xs text-muted-foreground">Colors, glows, confetti</p>
-                    </div>
-                  </label>
-                  <label className="flex items-center gap-3 p-3 rounded-lg hover:bg-accent/50 cursor-pointer">
-                    <Checkbox
-                      checked={gameRules.rewardTypes.includes('sensory')}
-                      onCheckedChange={() => toggleRewardType('sensory')}
-                    />
-                    <div>
-                      <p className="text-sm font-medium">Sensory Rewards</p>
-                      <p className="text-xs text-muted-foreground">Haptics, sounds</p>
-                    </div>
-                  </label>
-                  <label className="flex items-center gap-3 p-3 rounded-lg hover:bg-accent/50 cursor-pointer">
-                    <Checkbox
-                      checked={gameRules.rewardTypes.includes('animation')}
-                      onCheckedChange={() => toggleRewardType('animation')}
-                    />
-                    <div>
-                      <p className="text-sm font-medium">Animation Rewards</p>
-                      <p className="text-xs text-muted-foreground">Transitions, micro-interactions</p>
-                    </div>
-                  </label>
+              <div className="flex items-center justify-between p-3 rounded-lg hover:bg-accent/50">
+                <div>
+                  <p className="text-sm font-medium">Momentum Levels</p>
+                  <p className="text-xs text-muted-foreground">Mental state mastery progression</p>
                 </div>
+                <Switch
+                  checked={gameRules.allowLevels}
+                  onCheckedChange={(v) => updateGameRules({ allowLevels: v })}
+                />
+              </div>
+              <div className="flex items-center justify-between p-3 rounded-lg hover:bg-accent/50">
+                <div>
+                  <p className="text-sm font-medium">Completion Badges</p>
+                  <p className="text-xs text-muted-foreground">Visual milestones for achievements</p>
+                </div>
+                <Switch
+                  checked={gameRules.allowBadges}
+                  onCheckedChange={(v) => updateGameRules({ allowBadges: v })}
+                />
+              </div>
+              <div className="flex items-center justify-between p-3 rounded-lg hover:bg-accent/50">
+                <div>
+                  <p className="text-sm font-medium">Visual Progression</p>
+                  <p className="text-xs text-muted-foreground">Progress rings and feedback animations</p>
+                </div>
+                <Switch
+                  checked={gameRules.allowVisualProgression}
+                  onCheckedChange={(v) => updateGameRules({ allowVisualProgression: v })}
+                />
               </div>
             </CardContent>
           </CollapsibleContent>
         </Card>
       </Collapsible>
+
+      {/* System-Guarded Features */}
+      <Collapsible open={guardedOpen} onOpenChange={setGuardedOpen}>
+        <Card>
+          <CollapsibleTrigger asChild>
+            <CardHeader className="cursor-pointer hover:bg-accent/50 transition-colors rounded-t-lg">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center">
+                    <Lock className="w-5 h-5 text-muted-foreground" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-base">System-Guarded</CardTitle>
+                    <CardDescription className="text-xs">
+                      Features replaced with safer alternatives
+                    </CardDescription>
+                  </div>
+                </div>
+                {guardedOpen ? (
+                  <ChevronDown className="w-5 h-5 text-muted-foreground" />
+                ) : (
+                  <ChevronRight className="w-5 h-5 text-muted-foreground" />
+                )}
+              </div>
+            </CardHeader>
+          </CollapsibleTrigger>
+
+          <CollapsibleContent>
+            <CardContent className="pt-0 space-y-3">
+              {GUARDED_FEATURES.map((feature) => (
+                <div
+                  key={feature.id}
+                  className="p-3 rounded-lg bg-muted/30 border border-border/50"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex-1 space-y-1">
+                      <div className="flex items-center gap-2">
+                        <p className="text-sm font-medium text-muted-foreground line-through">
+                          {feature.name}
+                        </p>
+                        <span className="text-[10px] uppercase tracking-wide px-1.5 py-0.5 rounded bg-secondary text-muted-foreground font-medium">
+                          Replaced
+                        </span>
+                      </div>
+                      <p className="text-sm text-foreground font-medium">
+                        → {feature.replacedBy}
+                      </p>
+                      <div className="flex items-start gap-1.5 mt-2">
+                        <Info className="w-3 h-3 text-muted-foreground flex-shrink-0 mt-0.5" />
+                        <p className="text-xs text-muted-foreground italic">
+                          {feature.reason}
+                        </p>
+                      </div>
+                    </div>
+                    <Lock className="w-4 h-4 text-muted-foreground/50 flex-shrink-0" />
+                  </div>
+                </div>
+              ))}
+            </CardContent>
+          </CollapsibleContent>
+        </Card>
+      </Collapsible>
+
+      {/* Allowed Rewards */}
+      <Card>
+        <CardHeader className="pb-3">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center">
+              <AlertTriangle className="w-5 h-5 text-muted-foreground" />
+            </div>
+            <div>
+              <CardTitle className="text-base">Feedback Types</CardTitle>
+              <CardDescription className="text-xs">
+                How the system rewards progress
+              </CardDescription>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="pt-0 space-y-2">
+          <label className="flex items-center gap-3 p-3 rounded-lg hover:bg-accent/50 cursor-pointer">
+            <Checkbox
+              checked={gameRules.rewardTypes.includes('visual')}
+              onCheckedChange={() => toggleRewardType('visual')}
+            />
+            <div>
+              <p className="text-sm font-medium">Visual Rewards</p>
+              <p className="text-xs text-muted-foreground">Colors, glows, progress rings</p>
+            </div>
+          </label>
+          <label className="flex items-center gap-3 p-3 rounded-lg hover:bg-accent/50 cursor-pointer">
+            <Checkbox
+              checked={gameRules.rewardTypes.includes('sensory')}
+              onCheckedChange={() => toggleRewardType('sensory')}
+            />
+            <div>
+              <p className="text-sm font-medium">Sensory Rewards</p>
+              <p className="text-xs text-muted-foreground">Haptics, sounds</p>
+            </div>
+          </label>
+          <label className="flex items-center gap-3 p-3 rounded-lg hover:bg-accent/50 cursor-pointer">
+            <Checkbox
+              checked={gameRules.rewardTypes.includes('animation')}
+              onCheckedChange={() => toggleRewardType('animation')}
+            />
+            <div>
+              <p className="text-sm font-medium">Animation Rewards</p>
+              <p className="text-xs text-muted-foreground">Transitions, micro-interactions</p>
+            </div>
+          </label>
+        </CardContent>
+      </Card>
 
       {/* Kill Switches */}
       <Collapsible open={killswitchOpen} onOpenChange={setKillswitchOpen}>
