@@ -2,7 +2,7 @@ import { useAdmin } from "@/contexts/AdminContext";
 import { Switch } from "@/components/ui/switch";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
-import { AlertTriangle } from "lucide-react";
+import { Shield, Lock, Unlock } from "lucide-react";
 
 export const GameRulesEditor = () => {
   const { gameRules, updateGameRules } = useAdmin();
@@ -18,62 +18,118 @@ export const GameRulesEditor = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-lg font-medium text-foreground">Game Feel Rules</h2>
-        <p className="text-sm text-muted-foreground">Control gamification elements</p>
+        <h2 className="text-lg font-medium text-foreground">Gamification Rules</h2>
+        <p className="text-sm text-muted-foreground">Control progression and reward systems</p>
       </div>
 
-      {/* Warning card */}
-      <Card className="border-amber-200 bg-amber-50/50">
+      {/* System Banner */}
+      <Card className="border-accent/30 bg-accent/10">
         <CardContent className="p-4">
           <div className="flex gap-3">
-            <AlertTriangle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+            <Shield className="w-5 h-5 text-accent-foreground flex-shrink-0 mt-0.5" />
             <div className="space-y-1">
-              <p className="text-sm font-medium text-amber-800">Emotion-First Design</p>
-              <p className="text-xs text-amber-700">
-                This app avoids competitive or anxiety-inducing gamification. 
-                Points, streaks, and failure states are disabled by design.
+              <p className="text-sm font-medium text-foreground">Emotion-First Design</p>
+              <p className="text-xs text-muted-foreground">
+                Progress is private, cumulative, and never punitive. 
+                Harmful gamification patterns are system-guarded.
               </p>
             </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* Disallowed elements */}
-      <Card>
+      {/* Unlocked Progression */}
+      <Card className="border-primary/20">
         <CardHeader className="pb-3">
-          <CardTitle className="text-base">Disallowed Elements</CardTitle>
-          <CardDescription>These are off by design to maintain emotional safety</CardDescription>
+          <div className="flex items-center gap-2">
+            <Unlock className="w-4 h-4 text-primary" />
+            <CardTitle className="text-base">Progression Systems</CardTitle>
+          </div>
+          <CardDescription>Safe, private progression tracking</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="flex items-center justify-between py-2 opacity-50">
-            <div>
-              <p className="text-sm font-medium text-foreground">Points System</p>
-              <p className="text-xs text-muted-foreground">Score tracking and point rewards</p>
-            </div>
-            <Switch checked={gameRules.allowPoints} disabled />
-          </div>
-          <div className="flex items-center justify-between py-2 opacity-50">
+          <div className="flex items-center justify-between py-2">
             <div>
               <p className="text-sm font-medium text-foreground">Streaks</p>
-              <p className="text-xs text-muted-foreground">Consecutive day tracking</p>
+              <p className="text-xs text-muted-foreground">Track consecutive days (pauses, never resets harshly)</p>
             </div>
-            <Switch checked={gameRules.allowStreaks} disabled />
+            <Switch 
+              checked={gameRules.allowStreaks} 
+              onCheckedChange={(v) => updateGameRules({ allowStreaks: v })}
+            />
           </div>
-          <div className="flex items-center justify-between py-2 opacity-50">
+          <div className="flex items-center justify-between py-2">
             <div>
-              <p className="text-sm font-medium text-foreground">Failure States</p>
-              <p className="text-xs text-muted-foreground">Negative feedback or penalties</p>
+              <p className="text-sm font-medium text-foreground">Momentum Levels</p>
+              <p className="text-xs text-muted-foreground">Mental state mastery progression</p>
             </div>
-            <Switch checked={gameRules.allowFailureStates} disabled />
+            <Switch 
+              checked={gameRules.allowLevels} 
+              onCheckedChange={(v) => updateGameRules({ allowLevels: v })}
+            />
+          </div>
+          <div className="flex items-center justify-between py-2">
+            <div>
+              <p className="text-sm font-medium text-foreground">Completion Badges</p>
+              <p className="text-xs text-muted-foreground">Visual milestone markers</p>
+            </div>
+            <Switch 
+              checked={gameRules.allowBadges} 
+              onCheckedChange={(v) => updateGameRules({ allowBadges: v })}
+            />
+          </div>
+          <div className="flex items-center justify-between py-2">
+            <div>
+              <p className="text-sm font-medium text-foreground">Visual Progression</p>
+              <p className="text-xs text-muted-foreground">Progress rings and feedback</p>
+            </div>
+            <Switch 
+              checked={gameRules.allowVisualProgression} 
+              onCheckedChange={(v) => updateGameRules({ allowVisualProgression: v })}
+            />
           </div>
         </CardContent>
       </Card>
 
-      {/* Allowed reward types */}
+      {/* System-Guarded */}
       <Card>
         <CardHeader className="pb-3">
-          <CardTitle className="text-base">Reward Types</CardTitle>
-          <CardDescription>Choose how to celebrate user progress</CardDescription>
+          <div className="flex items-center gap-2">
+            <Lock className="w-4 h-4 text-muted-foreground" />
+            <CardTitle className="text-base">System-Guarded</CardTitle>
+          </div>
+          <CardDescription>Replaced with safer alternatives by design</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4 opacity-50">
+          <div className="flex items-center justify-between py-2">
+            <div>
+              <p className="text-sm font-medium text-foreground line-through">Leaderboards</p>
+              <p className="text-xs text-muted-foreground">→ Personal Momentum Tracking</p>
+            </div>
+            <Switch checked={false} disabled />
+          </div>
+          <div className="flex items-center justify-between py-2">
+            <div>
+              <p className="text-sm font-medium text-foreground line-through">Loss Penalties</p>
+              <p className="text-xs text-muted-foreground">→ Momentum Pause (No Reset)</p>
+            </div>
+            <Switch checked={false} disabled />
+          </div>
+          <div className="flex items-center justify-between py-2">
+            <div>
+              <p className="text-sm font-medium text-foreground line-through">Public Scores</p>
+              <p className="text-xs text-muted-foreground">→ Session-Only Visibility</p>
+            </div>
+            <Switch checked={false} disabled />
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Reward types */}
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base">Feedback Types</CardTitle>
+          <CardDescription>How progress is celebrated</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-center justify-between py-2">
@@ -84,7 +140,7 @@ export const GameRulesEditor = () => {
               />
               <div>
                 <p className="text-sm font-medium text-foreground">Visual Rewards</p>
-                <p className="text-xs text-muted-foreground">Color changes, glows, confetti</p>
+                <p className="text-xs text-muted-foreground">Colors, glows, progress rings</p>
               </div>
             </div>
           </div>

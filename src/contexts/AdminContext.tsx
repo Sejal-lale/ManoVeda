@@ -62,11 +62,19 @@ export interface ContentConfig {
   showValidationMessages: boolean;
 }
 
-// Game feel rules
+// Game feel rules - Momentum-based system (private, cumulative, never subtractive)
 export interface GameFeelRules {
-  allowPoints: boolean;
+  // ALLOWED (unlocked)
   allowStreaks: boolean;
-  allowFailureStates: boolean;
+  allowLevels: boolean;
+  allowBadges: boolean;
+  allowVisualProgression: boolean;
+  // SYSTEM-GUARDED (locked by design)
+  allowLeaderboards: boolean;
+  allowSocialComparison: boolean;
+  allowLossPenalties: boolean;
+  allowPublicScores: boolean;
+  // Reward types
   rewardTypes: ('visual' | 'sensory' | 'animation')[];
 }
 
@@ -125,9 +133,17 @@ const DEFAULT_CONTENT: ContentConfig = {
 };
 
 const DEFAULT_GAME_RULES: GameFeelRules = {
-  allowPoints: false,
-  allowStreaks: false,
-  allowFailureStates: false,
+  // ALLOWED - private progression
+  allowStreaks: true,
+  allowLevels: true,
+  allowBadges: true,
+  allowVisualProgression: true,
+  // SYSTEM-GUARDED - harmful by design
+  allowLeaderboards: false,
+  allowSocialComparison: false,
+  allowLossPenalties: false,
+  allowPublicScores: false,
+  // Reward types
   rewardTypes: ['visual', 'sensory', 'animation'],
 };
 

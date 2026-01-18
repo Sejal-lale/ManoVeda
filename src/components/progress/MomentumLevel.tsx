@@ -1,7 +1,16 @@
-import { Zap } from "lucide-react";
+import { Zap, Snowflake, Sun, Activity, Focus, Crown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Progress } from "@/components/ui/progress";
 import { MOMENTUM_LEVELS } from "@/hooks/useProgress";
+
+// Level-specific icons for visual evolution
+const levelIcons: Record<number, typeof Zap> = {
+  1: Snowflake,  // Frozen
+  2: Sun,        // Warming Up
+  3: Activity,   // Moving
+  4: Focus,      // Focused
+  5: Crown,      // In Control
+};
 
 interface MomentumLevelProps {
   level: number;
@@ -12,18 +21,16 @@ interface MomentumLevelProps {
 export const MomentumLevel = ({ level, progress, compact = false }: MomentumLevelProps) => {
   const levelData = MOMENTUM_LEVELS.find(l => l.level === level) || MOMENTUM_LEVELS[0];
   const isMaxLevel = level >= MOMENTUM_LEVELS.length;
+  const LevelIcon = levelIcons[level] || Zap;
   
   if (compact) {
     return (
       <div className="flex items-center gap-2 px-3 py-2 rounded-lg">
         <div className="flex items-center justify-center w-7 h-7 rounded-md bg-primary/15">
-          <Zap className="w-4 h-4 text-primary" strokeWidth={2} />
+          <LevelIcon className="w-4 h-4 text-primary" strokeWidth={2} />
         </div>
         
         <div className="flex flex-col leading-none whitespace-nowrap">
-          <span className="text-base font-bold text-foreground">
-            Lv.{level}
-          </span>
           <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">
             {levelData.title}
           </span>
@@ -61,7 +68,7 @@ export const MomentumLevel = ({ level, progress, compact = false }: MomentumLeve
     <div className="flex flex-col gap-3 p-4 rounded-xl bg-card shadow-sm w-full max-w-[200px]">
       <div className="flex items-center gap-3">
         <div className="flex items-center justify-center w-12 h-12 rounded-lg bg-primary/15">
-          <Zap className="w-6 h-6 text-primary" strokeWidth={2} />
+          <LevelIcon className="w-6 h-6 text-primary" strokeWidth={2} />
         </div>
         
         <div className="flex flex-col">
